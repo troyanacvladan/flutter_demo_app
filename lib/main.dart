@@ -21,6 +21,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: myAppTheme,
+      /*
+      Scaffold: Implements the basic material design visual layout structure,
+      see: https://api.flutter.dev/flutter/material/Scaffold-class.html
+      * */
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Welcome to Flutter'),
@@ -57,11 +61,44 @@ the Dart language and is a recommended best practice for State object*/
 class _RandomWordsState extends State<RandomWords> {
   @override
   Widget build(BuildContext context) {
+    final _suggestions = <WordPair>[];
+    final _biggerFont = const TextStyle(fontSize: 18.0);
+
     /*
     *  Most of the app’s logic resides here—it maintains the state for the RandomWords widget
     * */
-    final wordPair = WordPair.random();
-    print(wordPair.asPascalCase);
-    return Text(wordPair.asPascalCase);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Startup Name Generator'),
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+
+        /*
+        The ListView class provides a builder property, itemBuilder, that’s
+        a factory builder and callback function specified as an anonymous function.
+        Two parameters are passed to the function—the BuildContext, and
+        the row iterator, i. The iterator begins at 0 and increments each time
+        the function is called. It increments twice for every suggested
+        word pairing: once for the ListTile, and once for the Divider.
+        This model allows the suggested list to continue growing as the user scrolls.
+        See: https://docs.flutter.dev/get-started/codelab#step-4-create-an-infinite-scrolling-listview
+        * */
+        itemBuilder: /*1*/ (context, i) {
+          if (i.isOdd) return const Divider(); /*2*/
+
+          final index = i ~/ 2; /*3*/
+          if (index >= _suggestions.length) {
+            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
+          }
+          return ListTile(
+            title: Text(
+              _suggestions[index].asPascalCase,
+              style: _biggerFont,
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -25,11 +25,8 @@ class MyApp extends StatelessWidget {
       Scaffold: Implements the basic material design visual layout structure,
       see: https://api.flutter.dev/flutter/material/Scaffold-class.html
       * */
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Welcome to Flutter'),
-        ),
-        body: const Center(
+      home: const Scaffold(
+        body: Center(
           child: RandomWords(),
         ),
       ),
@@ -62,7 +59,8 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   Widget build(BuildContext context) {
     final _suggestions = <WordPair>[];
-    final _biggerFont = const TextStyle(fontSize: 18.0);
+    const _biggerFont = TextStyle(fontSize: 18.0);
+    final _saved = <WordPair>{};
 
     /*
     *  Most of the app’s logic resides here—it maintains the state for the RandomWords widget
@@ -91,10 +89,17 @@ class _RandomWordsState extends State<RandomWords> {
           if (index >= _suggestions.length) {
             _suggestions.addAll(generateWordPairs().take(10)); /*4*/
           }
+
+          final alreadySaved = _saved.contains(_suggestions[index]);
           return ListTile(
             title: Text(
               _suggestions[index].asPascalCase,
               style: _biggerFont,
+            ),
+            trailing: Icon(
+              alreadySaved ? Icons.favorite : Icons.favorite_border,
+              color: alreadySaved ? Colors.red : null,
+              semanticLabel: alreadySaved ? 'Remove' : 'Save',
             ),
           );
         },

@@ -18,9 +18,10 @@ class MyApp extends StatelessWidget {
   // Also, see explanation what is BuildContext https://www.youtube.com/watch?v=rIaaH87z1-g
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
-      home:RandomWords(),
+      theme: myAppTheme,
+      home:const RandomWords(),
     );
   }
 }

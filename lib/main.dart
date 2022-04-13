@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
+  // Also, see explanation what is BuildContext https://www.youtube.com/watch?v=rIaaH87z1-g
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -63,6 +64,11 @@ class _RandomWordsState extends State<RandomWords> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Startup Name Generator'),
+        actions: [IconButton(
+          icon: const Icon(Icons.list),
+          onPressed: _pushSaved,
+          tooltip: 'Saved Suggestions',
+        )],
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16.0),
@@ -120,6 +126,34 @@ class _RandomWordsState extends State<RandomWords> {
             },
           );
         },
+      ),
+    );
+  }
+
+  _pushSaved(){
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (context) {
+
+            final tiles = _saved.map((pair) {
+                return ListTile(
+                  title: Text(
+                    pair.asPascalCase,
+                    style: _biggerFont,
+                  ),
+                );
+              },
+            );
+
+            final divided = tiles.isEmpty ? <Widget>[]
+                : ListTile.divideTiles(context: context, tiles: tiles,).toList();
+
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Saved Suggestions'),
+              ),
+              body: ListView(children: divided),
+            );
+            },
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:flutter_demo_app/common/theme.dart';
 
 
 void main() {
-  print('Hello, World!');
   runApp(const MyApp());
 }
 
@@ -18,18 +17,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Flutter Demo',
-      theme: myAppTheme,
-      /*
-      Scaffold: Implements the basic material design visual layout structure,
-      see: https://api.flutter.dev/flutter/material/Scaffold-class.html
-      * */
-      home: const Scaffold(
-        body: Center(
-          child: RandomWords(),
-        ),
-      ),
+      home:RandomWords(),
     );
   }
 }
@@ -45,7 +35,7 @@ class RandomWords extends StatefulWidget {
   const RandomWords({Key? key}) : super(key: key);
 
   @override
-  _RandomWordsState createState() => _RandomWordsState();
+  State<RandomWords> createState() => _RandomWordsState();
 }
 
 /*
@@ -56,15 +46,20 @@ By default, the name of the State class is prefixed with an underbar.
 Prefixing an identifier with an underscore enforces privacy in
 the Dart language and is a recommended best practice for State object*/
 class _RandomWordsState extends State<RandomWords> {
-  @override
-  Widget build(BuildContext context) {
-    final _suggestions = <WordPair>[];
-    const _biggerFont = TextStyle(fontSize: 18.0);
-    final _saved = <WordPair>{};
+  final _suggestions = <WordPair>[];
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+  final _saved = <WordPair>{};
 
-    /*
+  /*
     *  Most of the app’s logic resides here—it maintains the state for the RandomWords widget
     * */
+  @override
+  Widget build(BuildContext context) {
+
+    /*
+      Scaffold: Implements the basic material design visual layout structure,
+      see: https://api.flutter.dev/flutter/material/Scaffold-class.html
+      * */
     return Scaffold(
       appBar: AppBar(
         title: const Text('Startup Name Generator'),
@@ -98,9 +93,31 @@ class _RandomWordsState extends State<RandomWords> {
             ),
             trailing: Icon(
               alreadySaved ? Icons.favorite : Icons.favorite_border,
-              color: alreadySaved ? Colors.red : null,
-              semanticLabel: alreadySaved ? 'Remove' : 'Save',
+              color: alreadySaved ? Colors.red.shade300 : null,
+              semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
             ),
+            /*
+            In this step, you'll make the heart icons tappable. When the user
+            taps an entry in the list, toggling its favorited state, that word
+            pairing is added or removed from a set of saved favorites.
+
+            To do that, you'll implement onTap function (which is called when
+            the user taps this list tile.). If a word entry has already been added
+            to favorites, tapping it again removes it from favorites. When a tile
+            has been tapped, the function calls setState() to notify the framework that state has changed.
+
+            TIP: In Flutter's reactive style framework, calling setState() triggers
+             a call to the build() method for the State object, resulting in an update to the UI.
+            * */
+            onTap: (){
+              setState(() {
+                if (alreadySaved) {
+                  _saved.remove(_suggestions[index]);
+                } else {
+                  _saved.add(_suggestions[index]);
+                }
+              });
+            },
           );
         },
       ),
